@@ -174,8 +174,88 @@ part of a chunk. added line shown with plus and deleted with
 minus.
 
 
+- Visual diff tools
+? Diff Tools
+KDiff3, P4Merge, WinMerge (Windows Only), VSCode
+? Making VSCode default diff tool
+Giving name : git config --global diff.tool vscode
+Launch VSCode :
+git config --global difftool.vscode.cmd "code --wait --diff $LOCAL $REMOTE"
+LOCAL : old file placeholder, REMOTE : new file placeholder.
+? View / edit configuration file
+git config --global -e
+Correct command part in the file, as placeholders are lost.
+? Using tool
+Working dir vs staging area : git difftool
+staging area vs last commit : git difftool --staged
 
+- Viewing history
+? git log
+identifier : 40 char hex string unique identifier
+HEAD to master
+Author, Date time, description
+space to go to next page
+? git log --oneline
+Short summary
+unique identifier with 7 chars
+HEAD to master
+one line description
+? git log --oneline --reverse
+first to last order
 
+- Viewing a commit
+? show command (shows diff)
+Reference using identifier
+git show <some identifier chars>
+Reference using HEAD pointer
+git show HEAD~<steps to go back>
+? viewing final version in a commit
+git show HEAD~steps:<path to file>
+? Viewing all files in commit
+git ls-tree HEAD~steps
+? Files represented using blobs, and dirs using tree in git database.
+? Viewing objects (files / dirs) in git database
+git show <some identifier chars>
+Objects can be : commits, blobs, trees and tags
+
+- Unstaging files
+? Restoring staging area
+git restore --staged <filenames.. or patterns or period for all>
+? Restore command takes copy from the next environment
+for staging : last commit,
+for working dir : staging area.
+
+- Discarding local changes
+? Restoring working directory
+git restore <filenames.. or patterns or period for all>
+? File from staging area is copied to working dir.
+? It doesn't work for untracked files
+? Force clean is required to remove new untracked files
+git clean -fd (force and directories)
+
+- Restoring a file to an earlier version
+? By default git restores for next environment
+If not in staging area then last commit.
+? git restore --source=HEAD~steps <filepath>
+source is commit where file will be copied from.
+New untracked file will be created.
+
+- Creating snapshots with vscode
+? Source panel shows similar to output of status command
+
+- Creating snapshots with gitkraken
+? gitkraken is only a gui tool.
+? Open repository
+? It has
+List of commits, Author, Message, Date time
+? More details click on commit
+commit id, message, author, date time,
+summary of changes (list/tree view, view all files)
+? Getting diff 
+click on file in summary of changes
+Diff view and file view
+In Diff view : split, inline and hunk view
+? Changes can be staged / unstaged / viewed / committed.
 
 
 
