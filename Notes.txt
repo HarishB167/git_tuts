@@ -418,6 +418,235 @@ git show <annotated tag name>
 id, author, time, summary of modified files
 * Select history in file view to view history
 * Ctrl+P : command pallette.
+------------------------------------------------------------------------------
+
+Section 4 : Branching
+
+- Introduction
+* Use branches
+* Compare branches
+* Merge branches
+* Resolve conflicts
+* Undo a faulty merge
+* Essential tools (stashing, cherry picking)
+
+- What are branches
+* For working with new work items without messing with main line
+of work.
+* To keep main line stable and ready for release.
+* Anyone joining can start on stable codebase.
+* Subversion vcs copies entire project on creation of branch,
+so consuming high space
+* Git branches are pointer to a commit.
+* On creation of branch git creates a new pointer which can be moved
+around.
+* Using HEAD pointer knows currently selected branch. HEAD pointer is
+a file containing name of branch/commit
+
+- Working with branches
+* When we get bug report
+* To fix it we should create new branch
+git branch bugfix
+* See list of branches : git branch
+* Switching branch
+git checkout bugfix (old way)
+git switch bugfix
+* Renaming branch
+git branch -m bugfix bugfix/signup-form
+* Stage and commit it
+* Deleting a branch
+git branch -d bugfix/signup-form (need to be fully merged)
+Forcing delete : git branch -D bugfix/signup-form
+* Create and switch branch in one command
+git switch -C bugfix
+
+- Comparing branches
+* What commits are comming in master
+Showing commits that are in bugfix and not in master
+git log master..bugfix/signup-form
+* See actual changes
+git diff master..bugfix/signup-form
+git diff bugfix/signup-form (comparing bugfix with current branch)
+* See affected file names
+git diff --name-status bugfix/signup-form
+
+- Stashing
+* For storing uncommitted changes temporarily, when switching branch.
+* Not part of history
+* Use stashing as :
+git stash push -m "message"
+* By default new untracked file are not included in stash.
+* Stashing including untracked files
+git stash push -am "message" (a for all files)
+* View stash : git stash list 
+list is as stash@{0}, stash@{1} etc
+* Looking changes inside stash
+git stash show stash@{1}
+or git stash show 1
+* Applying stash : git stash apply 1
+* Removing stash : git stash drop 1
+* Removing all : git stash clear
+
+- Merges
+* Fast-forward (if branches have not diverged)
+When linear path exists
+Brings pointer of source branch forward
+* 3-way (if branches have diverged)
+3 commits are taken into consideration.
+common ancestor commit of branches, and current commits of branches.
+New commit is created called as merge commit.
+
+- Fast forward merge
+* Using --graph option
+git log --oneline --all --graph
+* Merging master with bugfix/signup-form
+git merge bugfix/signup-form
+* Using No fast forward merge
+Creates a new commit for merge operation
+git merge --no-ff bugfix/login-form
+Editor opens for message for merge commit.
+Pollutes the history, true reflection of history, 
+allows reverting a feature (create a new commit undoing last commit).
+* Disabling fast forward merges
+Current repo : git config ff no
+Globally : git config --global ff no
+
+- 3 way merge
+* git merge <branch>
+* 3 commits are taken into consideration.
+* common ancestor commit of branches, and current commits of branches.
+* New commit is created called as merge commit.
+
+- Viewing merged and unmerged branches
+* After merging a branch, it should be deleted.
+* Viewing merged branches
+git branch --merged
+Delete it as : git branch -d <branch>
+* Viewing unmerged branches
+git branch --no-merged
+
+- Merge conflicts
+* Conflicts
+Same code changed in different branches
+File changed in one and deleted in other.
+Same file added with different contents.
+* Git stops merge process when conflict appears
+* git status shows conflicts in Unmerged paths
+* Open conflicted file
+It has markers representing changes in current and other branch
+<<<HEAD
+changes
+====
+changes
+>>>>> branch name
+* Options for conflicted changes
+Accept current, accept incoming, accept both or manually as
+Manually : reordering etc.
+Avoid adding new code in merge commit
+* Merge commit with new code is referred as evil commit.
+Changes introduced doesn't exist in source branches.
+* Add file to staging area > then commit and accept default message.
+
+- Visual merge tools
+* Merge tools
+Kdiff, P4Merge, WinMerge
+* Using p4merge
+Configure default tool : 
+git config --global merge.tool p4merge
+Where to find :
+git config --global mergetool.p4merge.path "<path to p4merge>"
+* Resolving conflicts during merge
+git mergetool
+
+- Aborting a merge
+* git merge --abort
+
+- Undoing a faulty merge
+* 2 ways
+Remove commit, Revert changes
+* Removing commit
+Rewriting history,
+only when changes are local.
+Shouldn't rewrite if changes are already shared.
+Use reset command to move master pointer to it's last commit.
+Faulty merge commit will become garbage and will be removed
+by git.
+git reset --hard HEAD~1
+Resetting options :
+soft - only HEAD pointer changed to last snapshot
+mixed (default) - staging area also changed
+hard - working directory also changed
+* Reverting changes
+Creating commit which revertes changes.
+First parent of merge is parent of same branch
+Reverting to last master branch commit :
+git revert -m 1 HEAD (1 means first parent)
+
+- Squash merging
+* When commits are not of good quality or not want
+history of a branch.
+* Create a commit on master which takes all changes of a branch
+and apply them as a separate normal commit on master branch.
+* Not a merge commit, doesn't have 2 parents, doesn't have
+reference to another branch.
+* Use with small short lived branches with bad history (bugfixes, 
+features implemented in few hours or in a day).
+* Merging
+git merge --squash <branch name>
+All changes are only staged
+Create commit with meaningful message
+git commit -m "Fix the bug etc."
+* Branch is need to be force deleted after squash merging,
+as this branch will not appear as merged with master, creating
+confusion.
+* Conflict resolution is same as others.
+
+- Rebasing
+* Changing base of a branch to current master, so fast forward
+merge is possible
+* Rebasing rewrites history
+* Use for only local commits.
+* Commits in git are immutable
+* Git will create new commits parallel to the commits of the branch 
+during rebasing, so that linear flow appears. Old commits of the branch
+will be deleted by git.
+* Rebasing
+From target branch do : git rebase master
+From master branch do fast forward merge.
+* Resolving conflicts
+Using mergetool resolve conflict.
+apply next comit : git rebase --continue
+skipping commit : git rebase --skip
+aborting rebasing : git rebase --abort
+* Preventing mergetool to automatically create backupfiles
+git config --global mergetool.keepBackup false
+
+- Cherry picking
+* Applying a commit from a different branch to current branch.
+* Conflict resolution is required.
+* git cherry-pick <commit id>
+* resolve conflict if there are any
+* Make commit with original (or changed) message: git commit
+
+- Picking a file from another branch
+* git restore --source=<branch name> -- filenames
+* Latest version of file from branch will copied.
+* Stage and commit the file.
+
+- Branching in VSCode
+* Graph of branches
+install git graph
+
+
+
+
+
+
+
+
+
+
+
 
 
 
