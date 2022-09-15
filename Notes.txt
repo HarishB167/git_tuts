@@ -256,6 +256,161 @@ click on file in summary of changes
 Diff view and file view
 In Diff view : split, inline and hunk view
 ? Changes can be staged / unstaged / viewed / committed.
+------------------------------------------------------------------------------
+
+Section 3 : Browsing History
+
+- Introduction
+? Search for commits (by author, date, message etc)
+? View a commit
+? Restore your project to an earlier point
+? Compare commits
+? View the history of a file
+? Find a bad commit that introduced a bug
+
+- Viewing the history
+? git log
+commit id, author, date time, message
+? git log --oneline
+? git log --stat
+See all changed files
+Can be used with oneline
+? git log --patch
+See actual changes as diff.
+Can be used with oneline
+
+- Filtering the history
+? Last 3 commits
+git log --oneline -3
+? Author : git log --oneline --author="author name"
+? Date : git log --oneline --after/--before="2020-08-17"
+git log --oneline --after/--before="yesterday/one week ago"
+? Message : git log --oneline --grep="Search term"
+Case sensitivie
+? Content : git log --oneline -S"search term"
+Added or removed
+--patch can be used to view changes.
+? Commits range
+git log --oneline fb0d187..edb3594
+? Commits effecting a file
+git log --oneline filename OR
+git log --oneline -- filename (when ambiguity occurs)
+
+- Formatting the log output
+? git log --pretty=format:"<format string>"
+? format string can be as
+%Cgreen%an%Creset commited %h on %cd
+an authorname
+H commit id 
+h short commit id
+cd commit date
+%Cgreen green color
+%Creset reset color
+? In git-log docs all placeholders can be found
+
+- Creating aliases
+? git config --global alias.<command name> "command":
+git config --global alias.lg "log --pretty=fomat:'<format string>'"
+? Use it as : git lg
+? Alias for unstaging changes
+git config --global alias.unstage "restore --staged ."
+
+- Viewing a commit
+? Referenced by
+Id : git show <id>
+HEAD pointer : git show HEAD~2
+? View final version
+git show HEAD~2:sections/creating-snap/file.txt
+? View modified files
+Name only : git show HEAD~2 --name-only
+Also file status : git show HEAD~2 --name-status
+
+- Viewing the changes across commits
+? Difference between two commits
+git diff HEAD~2 HEAD
+? Of only a file
+git diff HEAD~2 HEAD filename
+? name-status or name-only can also be appended to cmd
+
+- Checking out a commit
+? Restores working directory to the commit
+? git checkout <commit id/branch name>
+? HEAD points to commit we are working on
+? Commit created not on a branch will be dead and deleted.
+? git log shows old commit from current Head pointer
+? Viewing all commits
+git log --oneline --all
+
+- Finding bugs using bisect
+? Identify good and bad commit
+? Using bisect
+git bisect start
+git bisect bad (marks current commit as bad)
+git bisect good <good commit id>
+Using log check location of HEAD now.
+Test it for presence of bug
+Mark it as bad or good as
+git bisect good/bad
+HEAD position will change again, test it and mark it, then repeat
+till bad commit is found
+? Reattaching HEAD pointer
+git bisect reset
+
+- Finding contributors using shortlog
+? git shortlog
+Name, commits count, log messages
+? options
+-n : sort output based on commits count of author
+-s : suppress commit messages
+-e : show email address
+? Filtering options
+date range
+--before="date" --after="date"
+
+- Viewing the history of a file
+? Commits touched a file
+git log filename
+? Gettings stats
+git log --stat filename
+? View actual changes
+git log --patch filename
+
+- Restoring a deleted file
+? git log --oneline -- filename
+? Get file from commit previous of commit where file was deleted.
+? git checkout <commit id> filename
+? File also copied to staging area
+
+- Blaming : Finding the author of line using blame
+? git blame filename
+? With email : git blame -e filename
+? Filter by lines
+git blame -e -L 1,3 filename
+
+- Tagging
+? Bookmarking commits (version etc)
+? Adding label
+Tagging last commit : git tag v1.0
+Tagging earlier commit : git tag v1.0 <commit id>
+? Reference using tag
+git checkout v1.0
+? See all tags : git tag
+? Lightweight tag
+? Another type of tag :
+Annotated tag, 
+complete object having tagger name,
+email, message
+? Creating annotated tag
+git tag -a v1.1 -m "message"
+? See all tags with message : git tag -n
+? Viewing annotated tag
+git show <annotated tag name>
+? Deleting tag : git tag -d <tag name>
+
+- Browing history using VSCode
+? Install GitLens extension
+? Limitation : No second filter, lack of bisect command
+
 
 
 
