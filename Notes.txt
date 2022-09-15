@@ -411,6 +411,14 @@ git show <annotated tag name>
 ? Install GitLens extension
 ? Limitation : No second filter, lack of bisect command
 
+- Browsing history using gitkraken
+* Open repository
+* Search commits : id, author, message
+* Select commits to view details
+id, author, time, summary of modified files
+* Select history in file view to view history
+* Ctrl+P : command pallette.
+
 
 
 
