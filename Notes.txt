@@ -636,18 +636,163 @@ git config --global mergetool.keepBackup false
 - Branching in VSCode
 * Graph of branches
 install git graph
+------------------------------------------------------
+Section 5 : Collaboration
 
+- Introduction
+? Collaboration workflows
+? Pushing, fetching and pulling
+? Pull requests, issues and milestones
+? Contributing to open-source projects
 
+- Workflows
+? Centralized VCS
+? Distributed VCS
+? Distributed VCS with centralized workflow
+Don't have single point of failure
+Central repo can put on private server or cloud
+? Private repo : John pushes commit to central repo, amy pulls changes
+if confilcts arises then conflict are resolved and changes are
+pushed to central repo. Everyone has push right.
+? Public repo : Integration-manager
+have one or more maintainer and many contributors.
+Contributor forks the repository (getting copy in cloud), clones it, 
+makes changes, pushes it to copy in cloud, then sents pull request
+to maintainer. Then maintainer views forked repo and pulls changes to
+merge changes with main repo and pushes it.
 
+- Adding collaborators in github
+? In settings
+manage access > Invite collaborator
 
+- Cloning a repository
+? Cloning with custom folder name
+git clone <link> <folder name>
+origin/master is a remote tracking branch
 
+- Fetching
+? Downloading new commit from remote
+git fetch
+origin/master will be moved forward.
+? Merging of master with origin/master is required
+git merge origin/master
+? Viewing divergence of local and remote branches
+git branch -vv
 
+- Pulling
+? Combines fetch + merge
+? git pull
+? Doing rebasing instead of 3 way merge
+git pull --rebase
+rebases master branch on origin/master
 
+- Pushing
+? git push
+? Push is rejected when remote branch history is changed.
+Then new history need to be pulled and merged before pushing.
+? Don't use force (-f) option.
 
+- Storing credentials
+? Storing in memory
+git config --global credential.helper cache
+stored for only 15 mins
+? Storing on disk
+Using credential helper
+Mac: Keychain, Windows: Windows credential store
+? Check for keychain helper
+git credential-osxkeychain
+git config --global credential.helper osxkeychain
 
+- Sharing tags
+? By default push command doesn't transfer tags to remote
+? Pushing tag
+git push origin <tag name>
+? Deleting tag from remote
+git push origin --delete <tag name>
 
+- Releases
+? Github feature
+? High level feature build on top of tags
+? In home page of repository
+tags > releases > create a new release
+Create or use existing tag, select branch, 
+write title description, add binaries, then publish.
 
+- Sharing branches
+? Branches need to be explicitly pushed like tags
+? Viewing all remote tracking branches
+git branch -r
+? Pushing new branch
+git push -u origin <new branch> (u means set upstream)
+? Removing branch
+git push -d origin <branch> (d for delete)
 
+- Collaboration Workflow
+? Creating a feature
+one person creates a feature branch or create feature branch
+on github and pulled by both devs. > git fetch to get branch
+> Create new local branch and map it to remote branch
+git switch  -C feature/change-password origin/feature/change-password
+> 2nd dev clones repo > it creates local branch in same way
+> it creates a new commit and pushes it.
+? When feature is complete, the close the branch
+Pull all latest changes > merge feature with master > 
+push to send final change > Remove feature branch
+from origin > Remove feature local branch > 2nd dev
+also pulls latest changes > Remove feature local branch
+> Update remote branches (git remote prune origin)
+
+- Pull requests
+? Open discussion with team before merging
+? After completing a branch, a pull request is created, give 
+title and description > Add reviewer from collaborators
+? Reviewer views pull request > views changes > add
+comments to lines or code > Finish review by giving a 
+general description > mark it as comment / approve / request
+changes > submit review.
+? Creater makes changes according to request and pushes.
+> And request for new review. > then reviewer can approve.
+> After creater or reviewer can merge branch > the branch
+can be deleted after. > prune remote and delete local branch.
+
+- Issues
+? Feature of Github, associated with pull requests
+? Track bugfixes, new features, enhancements, ideas etc.
+? Create issue with title and description and attach files.
+? Can be assigned to one or more people. Or one can
+assign himself.
+? Labels can be added to issue.
+? Can be linked to pull requests.
+? Issue is automatically closed on closing of pull request.
+? Can be assigned to milestone.
+
+- Github labels
+? In issues > Labels
+? New label can be created - name, description, color.
+? Issues for each labels can be viewed.
+
+- Github milestones
+? To track progress of various issues.
+? Bunch of issues can be added to a milestone.
+? Issues can be assigned to a milestone.
+
+- Contributing to open source projects
+? Pull request in a forked repo is compared with original 
+base repository.
+
+- Keeping a forked repository up to date
+? Add another reference to base repository
+git remote add base <base repo url>
+? Pull/fetch from base remote repo to local
+git fetch base (origin is default for fetch)
+git merge base/master
+? Push to forked repository
+? Renaming remote repository
+git remote rename <old name> <new name>
+? Remove remote reference
+git remote rm <repo name>
+? Good practice : merge master with local feature branch regularly so that working on feature branch will have latest
+code and less conflicts in future with master. Bringing change of master into feature branch.
 
 
 
