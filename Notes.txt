@@ -793,11 +793,137 @@ git remote rename <old name> <new name>
 git remote rm <repo name>
 ? Good practice : merge master with local feature branch regularly so that working on feature branch will have latest
 code and less conflicts in future with master. Bringing change of master into feature branch.
+--------------------------------------------------------------
 
+Section 6 : Rewriting History
 
+- Introduction
+? Dangerous feature
+Drop/modify commits, combine/split
+? Why and when to rewrite history
+? Undo or revert commits
+? Use interactive rebasing
+? Recover lost commits
 
+- Why rewrite history
+? Why need history : What was changed, why and when.
+? Bad history
+Poor commit messages, Large commits, Small commits
+? Clean history : how its evolved from day 1.
+? Tools :
+Squash small, related commits
+Split large commits
+Reword commit message
+Drop unwanted commits
+Modify commits (content)
 
+- The Golden Rule of rewriting history
+? Don't rewrite public history
+? Rewriting private history is fine.
 
+- Undoing commits
+? New commit undoing previous commit
+git revert HEAD
+? Removing commit from history
+git reset --hard HEAD~1
 
+- Reverting commits
+? git revert HEAD
+? Some previous commit
+git revert HEAD_2
+? Range of previous commits
+git revert HEAD~3..HEAD (doesn't include HEAD~3)
+Multiple revert commits are created
+? Reverting range in one commit
+Adding reverting changes to staging area only
+git revert --no-commit HEAD~3..HEAD
+Aborting revert : git revert --abort
+Continuing : git revert --continue
+Write a message which describes multiple reverts.
+
+- Recovering last commits
+? View history of references movement
+HEAD pointer : git reflog
+branch : git reflog show <branch>
+? Recovering by resetting
+git reset <reflog entry> OR
+git reset <commit id>
+
+- Ammending the last commit
+? Stage required changes
+? git commit --ammend  [optional -m "new message"]
+? Git at back creates new commit and replaces last one.
+? Removing an added file from last commit
+Reset head with mixed option :
+git reset --mixed HEAD~1
+Delete target untracked file : git clean - fd
+Stage changes : git add .
+Create new commit : git commit -m "message"
+
+- Ammending an earlier commit
+? Using interactive rebasing
+? The target commit and earlier from that will be replayed/recreated
+? git rebase -i <commit id>
+? Editor will open with script having rebase operation
+? Edit 'pick' to 'edit' for commit we want to ammend. 
+Close the editor.
+? Make changes and stage them
+? git commit --ammend
+? git rebase --continue
+? Rebase can be aborted : git rebase --abort
+? Rebasing rewrites history
+? Only for the unshared commits.
+
+- Dropping a commit
+? Viewing commit 
+git show <commit id>
+? Start interactive rebase with parent commit of target
+commit.
+git rebase -i <commit id>^ (^ means parent)
+? Editor will open with rebase operation script
+? Edit 'pick' to 'drop' of target commit, or delete line.
+Close the editor.
+? Conflict will arise. Resolve the conflict
+? Continue : git rebase --continue
+
+- Rewording commit messages
+? Using interactive rebasing from parent
+git rebase -i <commit id>^
+? In Editor change pick to reword for the commits. Close
+the editor.
+? Git will opend editor for the commits, and then change messages.
+
+- Reordering commits
+? Using interactive rebasing from commit after which we
+want the target commit.
+git rebase -i <before location commit id>
+? Editor will open, move pick command of target commit up
+in the editor. Close the editor
+
+- Squashing commits
+? Using interactive rebasing from parent
+git rebase -i <commit id>^
+? Editor will open, excluding 1st target commit, change pick to 
+squash for next commits to be squashed. Close the editor.
+? Give commit message.
+? If commits are not next to each other, then they can be
+reordered.
+? Instead of 'squash', 'fixup' can be used, it makes use of first
+commit's message and doesn't ask for new commit message.
+
+- Splitting a commit
+? Creating multiple commits instead of the target commit.
+? Using interactive rebasing from parent
+git rebase  -i <commit id>^
+? In Editor change pick to edit for target commit
+? Split it as
+move to previous commit : git reset HEAD^
+Stage area also has changed to previous commit
+Stage first change and commit it.
+Then stage second change and commit it.
+Continue rebasing : git rebase --continue
+
+- Rewriting history using gitkraken
+? Cannot split, ammend or edit commit
 
 
